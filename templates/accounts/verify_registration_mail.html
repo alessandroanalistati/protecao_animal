@@ -1,0 +1,83 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+- OTP Verification
+{% endblock title %}
+
+{% block content %}
+
+ {% comment %} <div id="app"> {% endcomment %}
+<section class="section">
+    
+    <div class="container mt-5">
+        <div class="row">
+          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+            <div class="card card-primary">
+              <div class="card-header" style="display: flex;justify-content: space-between;">
+                <h4>OTP Verification</h4>
+                {% comment %} <a href="{% url 'home.index' %}" style="text-decoration:none;">Back</a> {% endcomment %}
+              </div>
+              <div class="card-body">
+
+
+
+
+                <form method="post" action="" class="needs-validation" novalidate="" onsubmit="button_disabler()">
+                    {% csrf_token %}
+
+                    <p style="text-align:center">We send a verification code to {{email}}</p>
+                    <p style="text-align:center;color: red;">{{msg}}</p>
+
+
+                    <div class="form-group">
+                        {% comment %} <label for="otp">OTP</label> {% endcomment %}
+                        <input id="otp" type="text" class="form-control" name="otp" tabindex="1" required="" autofocus="" placeholder="Enter your OTP" value="{{form_otp}}">
+                        <div class="invalid-feedback">
+                            Please enter your OTP
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <a href="{% url 'signup' %}" class="btn btn-light btn-lg btn-block">Re-send</a>
+                        <button type="submit" id="form_btn" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                            Verify
+                        </button>
+                    </div>
+
+                </form>
+
+              </div>
+            </div>
+           
+          </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+
+<!-- on form submit button disabler start -->
+<script>
+    
+    function button_disabler(){
+        if ($('#otp').val() != '' ) {
+            $("#form_btn").addClass("btn-progress disabled");
+        }
+    }
+</script>
+<!-- on form submit button disabler end -->
+
+{% endblock %}
+

@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User Dashboard
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block styles %}
+<!-- Filepond stylesheet -->
+<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet"/>
+
+<style>
+    .filepond--credits{
+        display:none;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<section class="section">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="card">
+
+                <!-- <form id="form" method="POST" action="" enctype="multipart/form-data"> -->
+                <form id="form">
+                    {% csrf_token %}
+                    <div class="card-header">
+                        <h4>Update Dogspot</h4>
+                    </div>
+                    <div class="card-body">
+
+
+
+                        <!-- hidden id passing for post updation form purpose -->
+                        <input type="hidden" id="id" name="id" value="{{ single_map_object.id }}" class="form-control" required>
+
+                        <div class="form-group">
+                            <label>Place Name</label>
+                            <input type="text" id="place_name" name="place_name" value="{{ single_map_object.place_name }}" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="description" name="description"  class="form-control" required="">{{ single_map_object.description }}</textarea>
+                            
+                            <div class="invalid-feedback">
+                                {{ unicorn.errors.description.0.message }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Numbers Of Dogs</label>
+                            <input type="number" id="no_of_dogs" name="no_of_dogs" value="{{ single_map_object.no_of_dogs }}" class="form-control" min="1" id="" required>
+                        </div>
+
+                        {% comment %} <div class="form-group">
+                            <label>Select Dog Behaviour</label>
+                            <select name="tech_category_id" id="tech_category_id" class="form-control" required>
+                                <option value="" selected disabled>Select</option>
+                                <option value="aggressive">Aggressive</option>
+                                <option value="biting">Biting</option>
+                                <option value="Social">Social</option>
+                                <option value="friendly">Friendly</option>
+                                <option value="Barking">Barking</option>
+                                <option value="Chasing">Chasing</option>
+                                <option value="Territorial">Territorial</option>
+                                <option value="Illness">Illness</option>
+                            </select>
+                        </div> {% endcomment %}
+
+
+                        <div class="form-group">
+                            <label class="form-label">Select Dog Behaviour</label>
+
+                            <!-- multiple checkbox Behaviour value hold in input box -->
+                            <input type="hidden" id="behaviour_data_text_box" value="{{ single_map_object.behaviour }}"  name='behaviour' class="form-control">
+
+
+                            {% comment %} // this is an updation page - so, this script is dynamically create using javasript, the js logic is in the last area of this page {% endcomment %}
+                            {% comment %} <div class="selectgroup selectgroup-pills">
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Aggressive" class="selectgroup-input behaviour_checkbox" >
+                                    <span class="selectgroup-button">Aggressive</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Biting" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Biting</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Social" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Social</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Friendly" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Friendly</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Barking" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Barking</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Chasing" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Chasing</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Territorial" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Territorial</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Illness" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Illness</span>
+                                </label>
+                            </div> {% endcomment %}
+
+                            {% comment %} this is for dynamic checkbox creation for dog behaviour [Aggressive,Biting,Social,Friendly,Barking,Chasing,Territorial,Illness] {% endcomment %}
+                            <div id="checkbox-container" class="selectgroup selectgroup-pills">
+                            </div>
+
+
+                        </div>
+                        
+
+                        <div class="form-group">
+                            <label>Select Distance</label>
+                            <select name="km" id="km" class="form-control" required>
+                                <option value="" selected disabled>Select</option>
+                                <option value="250"  {% if single_map_object.km_distance == 250 %}selected{% endif %} >500 meters</option>
+                                <option value="500" {% if single_map_object.km_distance == 500 %}selected{% endif %} >1 kilometers</option>
+                                <option value="1000" {% if single_map_object.km_distance == 1000 %}selected{% endif %} >2 kilometers</option>
+                                <option value="1500" {% if single_map_object.km_distance == 1500 %}selected{% endif %} >3 kilometers</option>
+                                <option value="2000" {% if single_map_object.km_distance == 2000 %}selected{% endif %} >4 kilometers</option>
+                                <option value="2500" {% if single_map_object.km_distance == 2500 %}selected{% endif %} >5 kilometers</option>
+                            </select>
+                        </div>
+                        
+
+                        <!-- We'll transform this input into a pond -->
+                        <div class="form-group">
+                            {% comment %} <label>Option 1</label> {% endcomment %}
+                            <input name="images" id="images" type="file" class="filepond" accept="image/*" multiple 
+                            data-max-file-size="1MB" data-max-files="4" required="">
+                           
+                            <div class="invalid-feedback">
+                                {{ unicorn.errors.company_name.0.message }}
+                            </div>
+                        </div>
+
+                        
+                        
+                    </div>
+                    <div class="card-footer text-right">
+                        <a href="#" class="btn btn-danger" id="delete_Btn" data-toggle="modal" data-target="#delete_model_form">Delete</a>
+                        <button class="btn btn-primary" id="add_Btn">Update</button>
+                        <a href="{% url "user.dogspot_list" %}" class="btn btn-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</section>
+
+
+ 
+<!-- Deleting model form start -->
+<div class="modal fade" id="delete_model_form" tabindex="-1" role="dialog"
+aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Alert!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        Are you sure you want to delete the place "{{single_map_object.place_name}}"? This action cannot be undone, and all associated data will be permanently removed.
+    </div>
+    <div class="modal-footer bg-whitesmoke br">
+        
+        <form action="{% url "user.dogspot_delete" %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="delete_id" value="{{single_map_object.id}}">
+            <button type="submit" id="model_form_delete_btn" class="btn btn-primary">Confirm</button>
+        </form>
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    </div>
+    </div>
+</div>
+</div>
+<!-- Deleting model form end -->
+
+
+ 
+
+<!-- Filepond resize image style -->
+<style>
+    .filepond--root {
+        max-width:30em;
+    }
+    .filepond--item {
+        width: calc(25% - 0.5em);
+    }
+    body {
+        padding: 2em;
+    }
+    
+    img {
+        margin: 1em 2em 0 0;
+        border-radius: .25em;
+        box-shadow: 0 .125em .5em rgba(0,0,0,0.25);
+    }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+
+
+{% comment %} sweet alert2 cdn {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.14/dist/sweetalert2.all.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js" integrity="sha512-Zq9o+E00xhhR/7vJ49mxFNJ0KQw1E1TMWkPTxrWcnpfEFDEXgUiwJHIKit93EW/XxE31HSI5GEOW06G6BF1AtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<!-- FilePond image preview library -->
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<!-- FilePond validation library -->
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<!-- FilePond image-resize library -->
+{% comment %} <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script> {% endcomment %}
+
+<!-- Load FilePond library -->
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+<!-- Turn specific file input elements into ponds -->
+<script>
+
+    // this is an updation page - so, this script is rewrited to the last area of this page
+    // Select Dog Behaviour input box value setter logic, eg: [Aggressive,Biting,Social,Friendly,Barking,Chasing,Territorial,Illness]
+    {% comment %} $('.behaviour_checkbox').click(function(){
+        var behaviour_data = "";
+
+        $('.behaviour_checkbox:checked').each(function(){
+            behaviour_data += $(this).val()+", "
+        })
+
+        behaviour_data=behaviour_data.substring(0, behaviour_data.length-2) //removing last comma
+
+        $('#behaviour_data_text_box').val(behaviour_data); // setting input value
+
+    }); {% endcomment %}
+
+    // Register the plugin area
+
+    FilePond.registerPlugin(
+
+        // 1. image preview library registering
+        FilePondPluginImagePreview,
+        
+        // 2. input file validator library registering - (the default script will only accept image files)
+        FilePondPluginFileValidateType,
+        
+        // 3. image-resize library
+        //FilePondPluginImageResize,
+    );
+
+    var  files = [];
+    var image_elemenet_changed = 0
+    const inputElement = document.querySelector('input[type="file"]');
+    
+    // filepond object creating inside a function and calling them
+    function filepondcreator(){
+        
+        // initialization of filepond to dom element - add input-file element to filepond scripts
+        const pond = FilePond.create(inputElement, {
+            labelIdle: `Drag &amp; Drop your images or <span class="filepond--label-action" tabindex="0">Browse</span><br>`,
+            // imageCropAspectRatio: 1,
+            // imageResizeTargetWidth: 256,
+            // imageResizeMode: 'contain'
+            onaddfile: (err, fileItem) =>{
+                files.push(fileItem.file);
+                image_elemenet_changed += 1
+                console.log(files);
+                console.log('image_elemenet_changed:', image_elemenet_changed);
+            },
+
+            onremovefile: (err, fileItem) =>{
+                const index = files.indexOf(fileItem.file);
+                if (index > -1){
+                    files.splice(index, 1);
+                }
+                console.log(files);
+
+                image_elemenet_changed -= 1
+                console.log('image_elemenet_changed:', image_elemenet_changed);
+            }
+            
+        }); 
+
+        // adding restyle filepond input box style 
+        $(".filepond--drop-label").addClass("form-control");
+
+
+
+        // Fetch the image URL from Django and add it to FilePond
+        {% if single_map_object.dog_pics_set %}
+            {% for data in single_map_object.dog_pics_set.all  %}
+                fetch('http://127.0.0.1:8000{{data.image.url }}')
+                .then(response => response.blob())
+                .then(blob => {
+                    console.log('Fetched blob:', blob);
+                    const file = new File([blob], '{{ data.image.name }}', { type: 'image/jpeg' }); // Adjust the type based on the actual file type
+                    console.log('Created file:', file);
+                    pond.addFile(file);
+                })
+                .catch(error => {
+                    console.error(error, '?????????????????????????????????????????????????????????????????????');
+                });
+            {% endfor %}
+        {% endif %}
+        
+    
+        console.log('final image_elemenet_changed:', image_elemenet_changed)
+
+    }
+    filepondcreator(); // filepond object creation function call
+
+    // initialization of filepond to dom element - add input-file element to filepond scripts
+    // FilePond.parse(document.body);
+
+
+    // ajax form submission area
+    var formData = new FormData();
+    $('#form').submit(function(e){
+        e.preventDefault();
+
+        // normal input elements data 
+        formData.append('id', $('#id').val());
+        formData.append('place_name', $('#place_name').val());
+        formData.append('description', $('#description').val());
+        formData.append('no_of_dogs', $('#no_of_dogs').val());
+        formData.append('behaviour', $('#behaviour_data_text_box').val());
+        formData.append('km', $('#km').val());
+        
+        // file input element data
+        formData.append('length', files.length); // passing image length using filepond method "onaddfile" and "onremovefile"
+        for (var i = 0; i < files.length; i++){
+            formData.append('images' + i, files[i]); // adding all 'n' images into formData, Eg: images1 = picture_name.jpg, image2, image3, etc....
+        }
+
+        // for django csrf_token setup
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        // console.log(formData);
+
+        $.ajax({
+            type:'POST',
+            url: '{% url "user.dogspot_update" %}',
+            data:formData,
+            cache:false,
+            processData:false,
+            contentType:false,
+            enctype: 'multipart/form-data',
+
+            beforeSend: function(){
+              $("#add_Btn").addClass("btn-progress disabled"); // adding button progress and disabled
+            },
+
+            success: function(data) {
+
+
+            if (data.point_exist){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: ' Map Location already added by other user ',
+                    footer: '<a href="{% url 'user.static_dogspot_marker_map' %}">Add New Point</a>'
+                })
+               
+                $("#add_Btn").removeClass("btn-progress disabled"); // removing button progress and disabled
+
+            }
+            else{
+
+                // alert('the form send successfully');
+                // console.log(formData);
+
+                //$('#form')[0].reset(); // resetting all form elements, but filepond object will not affect form reset method
+
+                //files=[]; // set to empty for form submission - because files adding methos start form scratch ("onaddfile" and "onremovefile")
+                //FilePond.destroy(inputElement); // it will remove the entire filepond object from Dom element
+                //filepondcreator(); // filepond object creation function re-call - it will create new filepond object after form submission
+                
+                $("#add_Btn").removeClass("btn-progress disabled"); // removing button progress and disabled
+
+                {% comment %} // sweet alert2 
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thank you for your contribution',
+                    text: ' Dogspot Successfully Added ',
+                    footer: '<a href="{% url 'user.static_dogspot_marker_map' %}">Add New Point</a>'
+                })
+                
+                // when form is success then redirect to map-marker view in after 5-seconds
+                setTimeout(
+                    function(){
+                        window.location.href = '{% url 'user.static_dogspot_marker_map' %}' // redirecting to map-marker view
+                        //alert('hai');
+                }, 5000); {% endcomment %}
+
+
+                iziToast.success({
+                    position: "topRight",
+                    timeout: 5000, icon: 'ico-success', 
+                    title: 'Spot',
+                    message: 'updated successfully'
+                });
+
+            }
+                
+            },
+            error: function() {
+                console.log(xhr.status + ':' + xhr.responseText );
+            }
+        })
+        
+    })
+
+</script>
+
+
+
+
+<!-- // Script to Create Behavior Checkboxes -->
+<script>
+    // Define the string containing the words
+    const DB_behaviours = "{{ single_map_object.behaviour }}".split(", ");  // Split the string into an array of words
+    
+    // Get the container element
+    const container = document.getElementById("checkbox-container");
+    
+    // Define the behavior checkboxes :- to Iterate print all individual behavior in to the div "checkbox-container" 
+    const behaviors = ["Aggressive", "Biting", "Social", "Friendly", "Barking", "Chasing", "Territorial", "Illness"];
+    // example like 
+    {% comment %}     
+    <label class="selectgroup-item">
+        <input type="checkbox" name="value" value="Aggressive" class="selectgroup-input behaviour_checkbox" >
+        <span class="selectgroup-button">Aggressive</span>
+    </label> 
+    {% endcomment %}
+
+    // Iterate through the behaviors and create checkboxes
+    behaviors.forEach(behavior => {
+
+        // Create a label element
+        //const label = document.createElement("label");
+        //label.classList.add("selectgroup-item"); // Add the "selectgroup-item" class to the label
+        
+        // or use this:-  both are same way to create label element
+        // Create a label element and set its classes
+        // eg: <label class="selectgroup-item">
+        const label = Object.assign(
+            document.createElement("label"),
+            {
+                className: "selectgroup-item"
+            }
+        );
+
+        
+        // Create an input element of type checkbox
+        //const input = document.createElement("input");
+        //input.type = "checkbox"; // Set the input type to checkbox
+        //input.name = "value"; // Set the name attribute of the checkbox
+        //input.value = behavior; // Set the value attribute of the checkbox to the current behavior
+        //input.classList.add("selectgroup-input", "behaviour_checkbox"); // Add classes to the checkbox
+
+        // or use this:-  both are same way to create input element
+        // Create an input element of type checkbox and set its attributes and classes
+        // eg:  <input type="checkbox" name="value" value="Aggressive" class="selectgroup-input behaviour_checkbox" >
+        const input = Object.assign(
+            document.createElement("input"), 
+            { 
+                type: "checkbox", 
+                name: "value", 
+                value: behavior, 
+                className: "selectgroup-input behaviour_checkbox" 
+            }
+        );
+
+        
+        // Create a span element to hold the behavior text
+        //const span = document.createElement("span");
+        //span.classList.add("selectgroup-button"); // Add the "selectgroup-button" class to the span
+        //span.textContent = behavior; // Set the text content of the span to the current behavior
+        
+        // or use this:-  both are same way to create input element
+        // Create a span element to hold the behavior text and set its classes
+        // eg: <span class="selectgroup-button">Aggressive</span>
+        const span = Object.assign(
+            document.createElement("span"),
+            {
+                className: "selectgroup-button",
+                textContent: behavior
+            }
+        )
+        
+         // Append the input and span elements to the label element
+        label.appendChild(input);
+        label.appendChild(span);
+        
+        // Append the label element to the container
+        container.appendChild(label);
+        
+        // Check the checkbox based on whether the current behavior is in the DB_behaviours
+        if (DB_behaviours.includes(behavior)) 
+        {
+            input.checked = true; // If the behavior is in DB_behaviours, set the checked attribute of the checkbox to true
+        }
+        
+    }); // forEach end
+
+
+    // Select Dog Behaviour input box value setter logic, eg: [Aggressive,Biting,Social,Friendly,Barking,Chasing,Territorial,Illness]
+    $('.behaviour_checkbox').click(function(){
+        var behaviour_data = "";
+
+        $('.behaviour_checkbox:checked').each(function(){
+            behaviour_data += $(this).val()+", "
+        })
+
+        behaviour_data=behaviour_data.substring(0, behaviour_data.length-2) //removing last comma
+
+        $('#behaviour_data_text_box').val(behaviour_data); // setting input value
+
+    }); // onclick end
+
+
+
+    //delete_Btn click disabling and set ot progress btn animation
+    $('#model_form_delete_btn').click(function(){
+        $("#model_form_delete_btn").addClass("btn-progress disabled"); // delete button -> progress and disabled
+    });
+
+</script>
+
+{% endblock %}

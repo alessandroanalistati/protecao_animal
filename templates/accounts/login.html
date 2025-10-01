@@ -1,0 +1,114 @@
+{% extends 'accounts/base.html' %}
+{% block title %}
+- Login
+{% endblock title %}
+
+{% block content %}
+
+ {% comment %} <div id="app"> {% endcomment %}
+<section class="section">
+    
+    <div class="container mt-5">
+        <div class="row">
+          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+            <div class="card card-primary">
+              <div class="card-header" style="display: flex;justify-content: space-between;">
+                <h4>Login</h4>
+                <a href="{% url 'home.index' %}" style="text-decoration:none;">Back</a>
+              </div>
+              <div class="card-body">
+
+
+
+
+                <form method="post" action="{% url 'login' %}" class="needs-validation" novalidate="">
+                    {% csrf_token %}
+
+                    <p style="text-align:center;color:green;"> {{ success_msg }} </p>
+                    <p style="text-align:center;color:red;"> {{ error_msg }} </p>
+
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" class="form-control" name="email" tabindex="1" required="" autofocus="" placeholder="Enter your email">
+                        <div class="invalid-feedback">
+                            Please fill in your email
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-block">
+                            <label for="password" class="control-label">Password</label>
+                            <div class="float-right">
+                                <a class="text-small" href="{% url 'forgot_password' %}">
+                                Forgot Password?
+                                </a>
+                            </div>
+                        </div>
+                        <input id="pswd" type="password" class="form-control" name="pswd" tabindex="2" required="" placeholder="Enter your password">
+                        <div class="invalid-feedback">
+                            please fill in your password
+                        </div>
+                    </div>
+
+                  {% comment %} <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
+                      <label class="custom-control-label" for="remember-me">Remember Me</label>
+                    </div>
+                  </div> {% endcomment %}
+
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                      Login 
+                    </button>
+                  </div>
+                </form>
+
+
+                <div class="mt-5 text-muted text-center">
+                    Don't have an account? <a href="{% url 'signup' %}" style="text-decoration:none;">Create One</a>
+                    {% comment %} <a href="{% url 'signup' %}">Back</a> {% endcomment %}
+                </div>
+
+
+
+                {% comment %} <div class="text-center mt-4 mb-3">
+                  <div class="text-job text-muted">Login With Social</div>
+                </div>
+                <div class="row sm-gutters">
+                  <div class="col-6">
+                    <a class="btn btn-block btn-social btn-facebook">
+                      <span class="fab fa-facebook"></span> Facebook
+                    </a>
+                  </div>
+                  <div class="col-6">
+                    <a class="btn btn-block btn-social btn-twitter">
+                      <span class="fab fa-twitter"></span> Twitter
+                    </a>
+                  </div>
+                </div> {% endcomment %}
+
+              </div>
+            </div>
+           
+          </div>
+        </div>
+    </div>
+
+
+</section>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+{% endblock %}
+

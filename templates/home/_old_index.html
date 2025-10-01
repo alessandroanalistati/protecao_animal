@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Spot</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+        *
+        {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+        }
+        header
+        {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 40px 100px;
+        z-index: 1000;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        }
+        header .logo
+        {
+        color: #fff;
+        text-transform: uppercase;
+        cursor: pointer;
+        }
+        .toggle
+        {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        /* background: url(https://i.ibb.co/HrfVRcx/menu.png); */
+        background: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/1024px-Hamburger_icon.svg.png);
+        background-repeat: no-repeat;
+        background-size: 30px;
+        background-position: center;
+        cursor: pointer;
+        }
+        .toggle.active
+        {
+        /* background: url(https://i.ibb.co/rt3HybH/close.png); */
+        background: url(http://cdn.onlinewebfonts.com/svg/img_143166.png);
+        background-repeat: no-repeat;
+        background-size: 25px;
+        background-position: center;
+        cursor: pointer;
+        }
+        .showcase
+        {
+        position: absolute;
+        right: 0;
+        width: 100%;
+        min-height: 100vh;
+        padding: 100px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #111;
+        transition: 0.5s;
+        z-index: 2;
+        }
+        .showcase.active
+        {
+        right: 300px;
+        }
+
+        .showcase video
+        {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.8;
+        }
+        .overlay
+        {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* background: #03a9f4; */
+        /* mix-blend-mode: overlay; */
+        }
+        .text
+        {
+        position: relative;
+        z-index: 10;
+        }
+
+        .text h2
+        {
+        font-size: 5em;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1em;
+        text-transform: uppercase;
+        }
+        .text h3
+        {
+        font-size: 4em;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1em;
+        text-transform: uppercase;
+        }
+        .text p
+        {
+        font-size: 1.1em;
+        color: #fff;
+        margin: 20px 0;
+        font-weight: 400;
+        max-width: 700px;
+        }
+        .text a
+        {
+        display: inline-block;
+        font-size: 1em;
+        background: #fff;
+        padding: 10px 30px;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: 500;
+        margin-top: 10px;
+        color: #111;
+        letter-spacing: 2px;
+        transition: 0.2s;
+        }
+        .text a:hover
+        {
+        letter-spacing: 6px;
+        }
+        .social
+        {
+        position: absolute;
+        z-index: 10;
+        bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .social li
+        {
+        list-style: none;
+        }
+        .social li a
+        {
+        display: inline-block;
+        margin-right: 20px;
+        filter: invert(1);
+        transform: scale(0.5);
+        transition: 0.5s;
+        }
+        .social li a:hover
+        {
+        transform: scale(0.5) translateY(-15px);
+        }
+        .menu
+        {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .menu ul
+        {
+        position: relative;
+        }
+        .menu ul li
+        {
+        list-style: none;
+        }
+        .menu ul li a
+        {
+        text-decoration: none;
+        font-size: 24px;
+        color: #111;
+        }
+        .menu ul li a:hover
+        {
+        color: #03a9f4; 
+        }
+
+        @media (max-width: 991px)
+        {
+        .showcase,
+        .showcase header
+        {
+            padding: 40px;
+        }
+        .text h2
+        {
+            font-size: 3em;
+        }
+        .text h3
+        {
+            font-size: 2em;
+        }
+        }
+    </style>
+
+    <!-- leaflet css -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin="" />
+
+</head>
+<body>
+     <!-- Video Source -->
+  <!-- https://www.pexels.com/video/aerial-view-of-beautiful-resort-2169880/ -->
+  <section class="showcase">
+    <header>
+      <h2 class="logo" style="color:black !important;padding-right: 30px;">Dogspot</h2>
+      <div class="toggle"></div>
+    </header>
+    {% comment %} <video src="https://traversymedia.com/downloads/videos/explore.mp4" muted loop autoplay></video> {% endcomment %}
+    <div class="overlay" id="map"></div>
+
+    <div class="text" style="z-index: 9999;">
+      <h2 style="color:black !important;">Check your spot</h2> 
+      <!-- <h3 style="color:black !important;">Exploring The World</h3> -->
+      <p style="color:black !important;font-weight: bold;">People can use this app to walk without fear from any place with photos and behavior of stray dogs.</p>
+      <a href="/accounts/login/">Join Now</a>
+    </div>
+
+    
+    <ul class="social">
+      <li><a href="#"><img src="https://i.ibb.co/x7P24fL/facebook.png"></a></li>
+      <li><a href="#"><img src="https://i.ibb.co/Wnxq2Nq/twitter.png"></a></li>
+      <li><a href="#"><img src="https://i.ibb.co/ySwtH4B/instagram.png"></a></li>
+    </ul>
+  </section>
+  
+  <div class="menu">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="/accounts/login/">Login</a></li>
+      <li><a href="/accounts/signup/">Signup</a></li>
+      <li><a href="#!">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+
+
+  <script>
+    const menuToggle = document.querySelector('.toggle');
+    const showcase = document.querySelector('.showcase');
+
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      showcase.classList.toggle('active');
+    })
+  </script>
+
+  <!-- leaflet javascript -->
+  <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+
+  <!-- leaflet fullscreem - css and js -->
+  <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+
+  <!-- leaflet search- css and js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <script>
+    // map initialization
+    // var map = L.map('map').setView([9.621770, 76.530144], 15);
+    // var map = L.map('map').setView([8.5241391, 76.9366376], 15);
+    // var map = L.map('map').setView([8.4855, 76.9492], 15); // python
+    var map = L.map('map', {fullscreenControl: true}).setView([{{lat}}, {{lng}}], 12); // python
+
+    // osm layer
+    var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+
+    // search to add Location pointer
+    var geocoder = L.Control.geocoder({
+      defaultMarkGeocode: false, position: 'topleft',
+      })
+      .on('markgeocode', function(e) {
+          // console.log(e)
+          // console.log(e.geocode.center.lat)
+          // console.log(e.geocode.center.lng)
+          // console.log(e.geocode.name)
+          lat = e.geocode.center.lat
+          lng = e.geocode.center.lng
+          location_name = e.geocode.name
+          var search_marker = L.marker([lat, lng], {draggable:true}).addTo(map);
+          search_marker.bindPopup(`${search_marker.getLatLng()}<br><a href="add-spot/${lat}/${lng}" target="_blank" style="display:flex;justify-content:center;font-weight:bold;">Add Dogspot </a>`).openPopup();
+
+          // ondrag marker pointer updater
+          search_marker.on('drag', function(e) {
+              // console.log('marker drag event : ', search_marker.getLatLng());
+              lat = search_marker.getLatLng().lat
+              lng = search_marker.getLatLng().lng
+              // console.log(e.target._popup._content)
+              console.log(search_marker)
+              // search_marker.bindPopup(`<a href="add-spot/${lat}/${lng}" target="_blank">Add Dogspot </a>` + search_marker.getLatLng()).openPopup();
+              search_marker.bindPopup(`${search_marker.getLatLng()}<br><a href="add-spot/${lat}/${lng}" target="_blank" style="display:flex;justify-content:center;font-weight:bold;">Add Dogspot </a>`).openPopup();
+          });
+
+      }).addTo(map);
+
+    // adding marker points
+    // var mymarker = L.marker([8.5241391, 76.9366376]).addTo(map);
+    var mymarker = L.marker([{{lat}}, {{lng}}]).addTo(map);
+    mymarker.bindPopup('Normal Marker'+ mymarker.getLatLng())
+
+  </script>
+
+</body>
+</html>
