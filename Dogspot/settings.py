@@ -34,16 +34,29 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 1. O TEMA DEVE VIR PRIMEIRO
+    'jazzmin',
+    
+    # 2. ADMIN ORIGINAL DO DJANGO: Use apenas 'django.contrib.admin'
     'django.contrib.admin',
+    
+    # ... Verifique aqui! Remova quaisquer outras menções a 'admin'
+    
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Se você vir 'admin', 'django_admin', ou 'django.contrib.admin'
+    # em qualquer outro lugar abaixo de 'jazzmin', REMOVA A DUPLICATA.
+    
+    # 3. Seus aplicativos do projeto
     'accounts',
     'admin_panel',
-    'user',
     'home',
+    'user',
+    # etc...
 ]
 
 MIDDLEWARE = [
@@ -153,3 +166,38 @@ DEFAULT_FROM_EMAIL = "no-reply@localhost"
 # mantenha variáveis compatíveis vindas do ambiente (ou vazias).
 EMAIL = os.environ.get("EMAIL_LOGIN", "")
 PASSWORD = os.environ.get("EMAIL_PASSWORD", "")
+
+
+# Dogspot/settings.py (Adicionar no final do arquivo)
+
+JAZZMIN_SETTINGS = {
+    # Título do navegador (browser)
+    "site_title": "Protenção Animal",
+    
+    # Texto do cabeçalho
+    "site_header": "Protenção Animal",
+    
+    # URL do seu logo (se houver)
+    "site_brand": "ASS",
+    
+    # URL para o seu login admin
+    "login_url": "admin:login",
+    
+    # URL de onde o logo é puxado
+    "welcome_sign": "Bem-vindo ao Painel de Protenção Animal",
+
+    # Configurações de UI: Mude o esquema de cores
+    "theme": "united",  # Tente "darkly", "flatly", "cosmo", "united"
+    
+    # Sidebar
+    "show_sidebar": True,
+    
+    # Ícones
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "accounts.user": "fas fa-user-circle", # Exemplo de como usar ícones em seus apps
+    },
+    
+    # ... e muitas outras opções
+}

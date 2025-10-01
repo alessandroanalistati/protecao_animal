@@ -19,15 +19,14 @@ from django.urls import path, include
 from django.conf import settings # for 'media' folder setting purpose
 from django.conf.urls.static import static # for 'media' folder setting purpose
 
-
 urlpatterns = [
-    path('django-admin/', admin.site.urls),
+    path('gestao/', admin.site.urls), # <--- NOVO ENDEREÇO SEGURO
+    # customizado em 'dashboard/' (se quiser mantê-lo)
+    path('dashboard/', include('admin_panel.urls')), 
 
-    # accounts app main urls
-    # home url
+    # ... suas outras rotas
     path('', include('home.urls')),
     path('accounts/',include('accounts.urls')),
-    path('admin/',include('admin_panel.urls')),
     path('user/',include('user.urls')),
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) # for 'media' folder setting purpose
